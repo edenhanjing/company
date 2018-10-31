@@ -21,10 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-import xadmin
-
 urlpatterns = [
-    path('xadmin/', xadmin.site.urls),
     path('admin/', admin.site.urls),
     path('',views.index,name='home'),
     path('introduce/',include('introduce.urls')),

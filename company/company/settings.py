@@ -39,8 +39,6 @@ INSTALLED_APPS = [
     'forum.apps.ForumConfig',
     'chat.apps.ChatConfig',
     'others.apps.OthersConfig',
-    'xadmin',
-    'crispy_forms',
 
     'django.contrib.admin',
     'django.contrib.auth',
