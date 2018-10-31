@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}修改个人信息{% endblock %}
+
+{% block content%}
+  <style>
+  .label {
+    cursor: pointer;
+  }
+
+  .img-container img {
+    max-width: 100%;
+  }
+  .content-body{margin-top: 20px; }
+  .button_{
+    margin: 15px auto;
+    width: 160px;
+    border: none;
+    border-radius: 5px;
+    background: #6dad58;
+    color: #fff;
+    padding:5px;
+    cursor:pointer;
+    font-weight: 600;
+  } 
+  .button_:hover{
+    background: #42752f;
+  }
+
+  </style>
+  <style type="text/css">
+    .user{
+      padding: 2px ;
+      margin: 5px;
+      list-style: none;
+      border-radius: 15px;
+      border: 1px solid #808286;
+      box-shadow: 0 2px 5px rgba(0,0,0,.1);
+      overflow: hidden;
+    }
+    .user:hover{
+      box-shadow: 0 5px 20px rgba(250,250,250,.1);
+    }
+    .user img{
+      border-radius: 30px;
+      width: 20px;
+      height: 20px;
+      overflow: hidden;
+      margin: 0 auto;
+      padding: 0;
+      /*border: 2px solid rgba(255, 255, 255, 0.5);*/
+      box-shadow:0 2px 5px rgba(0,0,0,.05);
+      float: left;
+
+    }
+    .user .username{
+      margin-left: 25px;
+      color: #fff;
+
+    }
+    .emojioneemoji{
+      font-size: inherit;
+      height: 2ex;
+      width: 2.1ex;
+      min-height: 20px;
+      min-width: 20px;
+      display: inline-block;
+      margin: -.2ex .15em .2ex;
+      line-height: normal;
+      vertical-align: middle;
+      max-width: 100%;
+      top: 0;
+    }
+    .emojionearea .emojionearea-editor{
+      min-height: 5rem;
+    }
+    .box{
+      max-width: 600px;
+      margin:0 auto;
+    }
+
+    .some-box{
+      float: left;
+      max-width: 600px;
+      margin:0 auto;
+      border-radius: 10px;
+      width: 100%;
+    }
+    .box-body{
+      background: #f7f7f7;
+      overflow:hidden;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.2);
+      height: 550px;
+    }
+
+    .chat-head{
+      background:#ececec;
+      padding: 5px 20px;
+      text-align: center;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: large;
+      font-size: 20px;
+      color: #444752;
+    }
+    .chat-body{
+      min-height: 455px;
+      max-height: 800px;
+      margin: 5px 0;
+      
+    }
+    /* 滚动条样式设置 */
+    .messages-content::-webkit-scrollbar{/*滚动条整体部分，其中的属性有width,height,background,border等*/
+        width:5px; 
+        background: black;
+    }
+    .messages-content::-webkit-scrollbar-track-piece{/*内层轨道，滚动条中间部分*/
+        background:#f7f7f7;
+    }
+    .messages-content::-webkit-scrollbar-thumb{/*滚动条里面可以拖动的那部分*/
+      background:#bbbbbb;
+      border-radius:5px;
+    }
+    
+    /* 滚动条样式设置 ---- 完成*/
+
+    .messages-content{
+      position: relative;
+      padding:0px 2%;
+      height: 455px;
+      overflow:scroll;
+
+    }
+    .message{
+      clear: both;
+      font-size: 14px;
+      padding: 6px 0;
+
+    }
+    .message:last-child {
+      margin-bottom: 30px;
+    }
+    .new {
+      -webkit-transform: scale(0);
+              transform: scale(0);
+      -webkit-transform-origin: 0 0;
+              transform-origin: 0 0;
+      -webkit-animation: bounce 500ms linear both;
+              animation: bounce 500ms linear both;
+    }
+    .message-body{
+      float: left;
+      padding: 5px 10px 7px;
+      border-radius: 5px 13px 13px 13px;
+      background: rgb(255,255,255,.5);
+      position: relative;
+      margin: 1px 0;
+      box-shadow: 0 3px 5px rgba(228, 227, 227, 0.42);;
+      max-width: 80%;
+    }
+    .message-left{
+      margin-left: 35px;
+    }
+
+    .message-right{
+      float: right;
+      border-radius: 13px 5px 13px 13px;
+      background: #b2e281;
+      
+    }
+    .message .avatar {
+      position: absolute;
+      z-index: 1;
+      left: -35px;
+      border-radius: 30px;
+      width: 30px;
+      height: 30px;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow:0 2px 5px rgba(0,0,0,.05);
+    }
+    .message .avatar img {
+      width: 100%;
+      height: auto;
+    }
+    .username{
+      font-size: 10px;
+    }
+    .message-timestamp{
+      clear: both;
+      text-align: center;
+      height: 20px;
+    }
+    .timestamp{
+      padding:0 5px 0 5px; 
+      font-size: 10px;
+      color: #555;
+      border-radius: 5px;
+      background: #ececec;
+      height: 10px
+    }
+
+    .col-10 ,.col-2{
+      padding: 0 1%;
+    }
+
+    .chat-footer{
+      margin: 0;
+      background: #f7f7f7;
+    }
+    .message-content{
+      width: 100%;
+      height: 90%;
+    }
+    .message-submit{
+      width: 100%;
+      height: 90%;
+      color: #fff;
+      border: none;
+      background: #66a8ef;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 5px;
+    }
+    .message-submit:hover{
+      background:#fff;
+      color:#333;
+    }
+
+    @-webkit-keyframes bounce {
+      0% {
+        -webkit-transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      4.7% {
+        -webkit-transform: matrix3d(0.45, 0, 0, 0, 0, 0.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.45, 0, 0, 0, 0, 0.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      9.41% {
+        -webkit-transform: matrix3d(0.883, 0, 0, 0, 0, 0.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.883, 0, 0, 0, 0, 0.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      14.11% {
+        -webkit-transform: matrix3d(1.141, 0, 0, 0, 0, 1.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1.141, 0, 0, 0, 0, 1.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      18.72% {
+        -webkit-transform: matrix3d(1.212, 0, 0, 0, 0, 1.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1.212, 0, 0, 0, 0, 1.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      24.32% {
+        -webkit-transform: matrix3d(1.151, 0, 0, 0, 0, 1.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1.151, 0, 0, 0, 0, 1.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      29.93% {
+        -webkit-transform: matrix3d(1.048, 0, 0, 0, 0, 1.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1.048, 0, 0, 0, 0, 1.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      35.54% {
+        -webkit-transform: matrix3d(0.979, 0, 0, 0, 0, 0.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.979, 0, 0, 0, 0, 0.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      41.04% {
+        -webkit-transform: matrix3d(0.961, 0, 0, 0, 0, 0.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.961, 0, 0, 0, 0, 0.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      52.15% {
+        -webkit-transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      63.26% {
+        -webkit-transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      85.49% {
+        -webkit-transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+      100% {
+        -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+                transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+      }
+    }
+   
+  </style>
+<div class="container">
+  <div class="content-body">
+    <div class="tiangou_info" id='tiangou_info' style="text-align: center;">
+      <div class="row" >
+        <div class="col-md-12" >
+          <label class="" data-toggle="tooltip" title="选取舔狗头像" style="background: #f5f5f5;border-radius: 5px;margin: 0 20px;box-shadow: 5px 5px 20px rgb(224, 224, 224);height: 160px;width: 160px;">
+            <img class="rounded" id="avatar" src="/media/AvatarImage/default.png"  alt='选取舔狗头像' style="width: 160px;height: 160px;">
+            <input type="file" class="sr-only" id="input" name="image" accept="image/*">
+          </label>
+          <p class="button_" onclick="getElementById('input').click()">选取舔狗头像</p>
+
+          <div style="border: none;border-radius: 5px;box-shadow: 2px 3px 15px rgba(236, 236, 236, 0.5);background: #fff;width: 350px;margin: auto;">
+            <span>舔狗名称：</span>
+            <input type="" id='tiangou_name' name="tiangou_name" style="padding: 5px;border: none;" value="舔狗" >
+          </div>
+        </div>
+
+      </div>
+      <div  class="row">
+        <span class="button_" onclick="info_seted()" id='start' style="margin-top:50px;">享受被舔</span>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">选取头像</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <div class="img-container">
+          <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" id="crop">确认</button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+
+    <div class="box"  style="margin-top: 20px;">
+      <div class="some-box " id='some-box' style="display: none" >
+        <div class="box-body">
+          <div class="chat-head">
+            <span id='tiangou_name_'>舔狗</span>
+          </div>
+          <div class="chat-body">
+            <div class="messages-content" id="messages-content">
+
+            </div>
+          </div>
+          <div class="chat-footer row">
+            <div class="col-10">
+              <textarea class="message-content " rows=2 rows=2 id="emojione_text"></textarea>
+            </div>
+            <div class="col-2">
+              <button class="message-submit" id="">发送</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script%}
+<link rel="stylesheet" href="{% static 'cropper.css' %}">
+<script src="{% static 'cropper.js' %}"></script>
+<script src="{% static 'js/emojionearea.min.js' %}"></script>
+<script type="text/javascript">
+      $(document).ready(function() {
+        window.emojioneVersion = "2.2.7";
+          $("#emojione_text").emojioneArea({
+            inline: true,
+            autoHideFilters: true,
+            search : false ,
+            pickerPosition : 'top',
+            tones:false,
+          });
+        });
+    </script>
+<script>
+  var avatar = document.getElementById('avatar');
+  var image = document.getElementById('image');
+  var input = document.getElementById('input');
+  var $modal = $('#modal');
+  var cropper;
+
+  $('[data-toggle="tooltip"]').tooltip();
+
+  input.addEventListener('change', function (e) {
+    var files = e.target.files;
+    var done = function (url) {
+      input.value = '';
+      image.src = url;
+      $modal.modal('show');
+    };
+    var reader;
+    var file;
+    var url;
+
+    if (files && files.length > 0) {
+      file = files[0];
+
+      if (URL) {
+      done(URL.createObjectURL(file));
+      } else if (FileReader) {
+      reader = new FileReader();
+      reader.onload = function (e) {
+        done(reader.result);
+      };
+      reader.readAsDataURL(file);
+      }
+    }
+  });
+
+  $modal.on('shown.bs.modal', function () {
+    cropper = new Cropper(image, {
+      aspectRatio: 1,
+      viewMode: 3,
+    });
+  }).on('hidden.bs.modal', function () {
+    cropper.destroy();
+    cropper = null;
+  });
+
+  document.getElementById('crop').addEventListener('click', function () {
+    var initialAvatarURL;
+    var canvas;
+
+    $modal.modal('hide');
+
+    if (cropper) {
+      canvas = cropper.getCroppedCanvas({
+      width: 160,
+      height: 160,
+      });
+      initialAvatarURL = avatar.src;
+      avatar.src = canvas.toDataURL();
+      
+
+    }
+  });
+
+  function info_seted(){
+    document.getElementById("tiangou_info").style.display="none";
+    var tiangou_name = document.getElementById("tiangou_name").value;
+    document.getElementById("tiangou_name_").innerHTML=tiangou_name;
+    document.getElementById("some-box").style.display="contents";
+    onmessage(rangenum(msg_list));
+    start_tiangou();
+  }
+</script>
+<script type="text/javascript">
+  var d, h, m;
+  var tiangou_name = document.getElementById("tiangou_name").value;
+
+  function updateScrollbar(){
+    var messages_content = document.getElementById('messages-content');
+    messages_content.scrollTop = messages_content.scrollHeight;
+  };
+  function setDate(){
+    d = new Date();
+    if (m != d.getMinutes()) {
+      m = d.getMinutes();
+      $('<div class="message-timestamp"><span class="timestamp">'+ d.getHours() + ':' + m +'</span></div>').appendTo($('.messages-content'));
+    };
+  };
+
+  function onmessage(msg) {
+    setDate();
+    $('<div class="message message-left new"><figure class="avatar"><img src='+avatar.src+'></figure><div class="username">'+'</div><div class="message-body ">'+msg+'</div></div>').appendTo($('.messages-content'));
+    updateScrollbar();
+  };
+
+  function myonmessage(msg){
+    setDate();
+    $('<div class="message"><div class="message-body message-right new">' + msg + '</div></div>').appendTo($('.messages-content'));
+    updateScrollbar();
+  };
+  //发送信息
+  $('.message-submit').click(function() {
+    var messageInputDom = $('.emojionearea-editor');
+    var message = messageInputDom.html();
+    if ($.trim(message) != '') {
+    myonmessage(message);
+    if($.trim(message).indexOf('滚') != -1){
+      onmessage('好的，我滚1s');
+    }
+    else if($.trim(message).indexOf('爱') != -1){
+      onmessage('我爱 我爱 我爱你');
+    }
+    else{
+      setTimeout(function() {onmessage(rangenum(msg_list2))},500+(Math.random() * 500));}
+    messageInputDom.empty();
+    messageInputDom.focus();
+    }
+    var emoji_html = $('.emojionearea-editor').html();
+    console.log(emoji_html);
+  });
+  //键盘enter快捷发送信息
+  $(window).on('keydown', function(e) {
+    if (e.which == 13) {
+      $('.message-submit').click();
+      return false;
+    }
+  });
+  //var msg_list = new Array()
+
+  var msg_list=[
+  '在吗？<img alt="😁" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f601.png">',
+  '我很想你。',
+  '最近怎么样？<img alt="😃" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f603.png">',
+  '有什么心事告诉我。', 
+  '为什么不理我啊?<img alt="😞" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f61e.png"><img alt="😞" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f61e.png"><img alt="😞" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f61e.png">',
+  '回我个消息好不好？<img alt="😅" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f605.png">', 
+  '你在干嘛呢半天不回消息？',
+  '在不在？你忙可以告诉我一下啊我一直在等你呢。' ,
+  $("#my_name").val()+'，我爱你',
+  '我喜欢你',
+  '你怎么那么好看<img alt="😟" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f61f.png">',
+  '你真好看<img alt="♥" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/2665.png">', 
+  '你是怎么长得这么好看的？',
+  '相信我，我可以对你好一辈子。',
+  '其他男生都是甜言蜜语但我不会。',
+  '出来吃个饭吧？火锅好不好？',
+  '我又喝酒了，头痛的感觉比心痛好多了。<img alt="😭" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f62d.png"><img alt="😭" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f62d.png">',
+  '感觉好想死啊，爱一个人好难啊！',
+  '你能回我消息我就开心得不得了。', '在一起好不好？我一定对你好。',
+  '对你日日想念，陪我说点话好不好？','我想视频一会，一分钟！',
+  '我愿意把我的一切给你！','让我住进你的心里。',
+  '我，'+tiangou_name,'对着这个天,对着这个地,发誓','永远都要和'+$("#my_name").val()+'在一起！',
+  '一日不见，思你如狂',
+  '“ 晚安 ”',
+  '<img src="http://127.0.0.1:8000/media/aini.jpg" style="height: 100px;">',
+  '<img src="http://127.0.0.1:8000/media/aini2.jpg" style="height: 100px;">',
+  '<img src="http://127.0.0.1:8000/media/aini2.jpeg" style="height: 100px;">',
+  '<img src="http://127.0.0.1:8000/media/aini3.jpg" style="height: 100px;">',
+  '<img src="http://127.0.0.1:8000/media/hongbao.gif" style="height: 100px;">',
+  '<img alt="😘" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f618.png"><img alt="😘" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f618.png"><img alt="😘" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f618.png">爱你哟',
+  '<img alt="😚" class="emojioneemoji" src="https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f61a.png">',
+
+  ];
+
+  var msg_list2=[
+  '你终于肯回我消息了',
+  'wawawaa,我收到你的消息了',
+  '请保持和我通信，我不能没有你',
+  '嗯嗯嗯，你说什么都对',]
+
+  function rangenum(array){
+    var value = array[Math.round(Math.random()*(array.length-1))];  //随机抽取一个值
+    return(value);
+  };
+
+
+  function put_msg(){
+    result = rangenum(msg_list);
+    setTimeout(function() {onmessage(result)},500+(Math.random() * 1000));
+
+  };
+  function start_tiangou(){
+    setInterval(function() {put_msg()},1500);
+  };
+
+</script>
+{% endblock %}
+

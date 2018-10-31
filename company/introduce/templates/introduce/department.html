@@ -1,0 +1,142 @@
+<div id="modal-container">
+  <div class="modal-background">
+    <div class="modal">
+      <h2>I'm a Modal</h2>
+      <p>Hear me roar.</p>
+
+    </div>
+  </div>
+</div>
+<div class="content">
+
+  <div class="buttons">
+
+    <div id="four" class="button">Blow Up</div><br>
+
+  </div>
+</div>
+
+<style type="text/css">
+
+
+
+#modal-container {
+  position: fixed;
+  display: table;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  transform: scale(0);
+}
+
+#modal-container.four {
+  z-index: 0;
+  transform: scale(1);
+}
+#modal-container.four .modal-background {
+  background: rgba(0, 0, 0, 0.2);
+}
+#modal-container.four.out .modal-background {
+  background: none;
+}
+#modal-container.four .modal-background .modal {
+  animation: blowUpModal 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four + .content {
+  z-index: 1;
+  animation: blowUpContent 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four.out .modal-background .modal {
+  animation: blowUpModalTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+#modal-container.four.out + .content {
+  animation: blowUpContentTwo 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+
+#modal-container .modal-background {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+#modal-container .modal-background .modal {
+  background: white;
+  padding: 50px;
+  display: inline-block;
+  border-radius: 3px;
+  font-weight: 300;
+  position: relative;
+}
+#modal-container .modal-background .modal h2 {
+  font-size: 25px;
+  line-height: 25px;
+  margin-bottom: 15px;
+}
+#modal-container .modal-background .modal p {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+
+
+
+@keyframes blowUpContent {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  99.9% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes blowUpContentTwo {
+  0% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes blowUpModal {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes blowUpModalTwo {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>
+<script type="text/javascript">
+$('.button').click(function(){
+  var buttonId = $(this).attr('id');
+  $('#modal-container').removeAttr('class').addClass(buttonId);
+  $('body').addClass('modal-active');
+})
+
+$('#modal-container').click(function(){
+  $(this).addClass('out');
+  $('body').removeClass('modal-active');
+});
+</script>

@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}社区{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-md-9">
+    <div class="card ">
+    <h5 class="card-header" ><img class="icon" alt="作者" src="{% static 'image/article.svg' %}" style="width:23px;height:23px;margin:0 5px 0 0;">所有文章</h5>
+    <div class="card-body" style="padding: 10px 20px ; min-height: 600px">
+      {% for article in articles %}
+      <div class="row" style="border-bottom:1px solid #edf0f2 ;padding: 20px ;">
+          <div class="col-sm-8" >
+            <a href="{% url 'forum:article' article.id %}" ><h5 >{{ article.title }}</h5></a>
+            <span class="text-muted" >{{article.content | striptags | truncatechars_html:80}}</span>
+          </div>
+          <div class="col-sm-4 text-right">
+            <small class="" >
+              <img class="icon" alt="作者" src="{% static 'image/bookmark.svg' %}" style="margin: 0 0 5px 5px">
+              <a href="" >
+                <span class="label label-info">
+                  {{ article.article_type.type_name }}
+                </span>
+              </a>
+              <img class="icon" alt="作者" src="{% static 'image/person.svg' %}" style="margin: 0 0 5px 5px">
+              {{ article.user.nickname }}
+              <br>
+              <img class="icon" alt="发表时间" src="{% static 'image/clock.svg' %}" style="margin: 0 0 5px 5px">
+              {% if article.created_time < time.year %}
+                {{ article.created_time|date:'Y-m-d H:i' }}
+              {% else %}
+                {{ article.created_time|date:'m-d H:i' }}
+              {% endif %}
+              
+              <img class="icon" alt="阅读量" src="{% static 'image/read.svg' %}" style="margin: 0 0 5px 5px">
+              {{article.read_num}}
+              <img class="icon" alt="点赞量" src="{% static 'image/likes.svg' %}" style="margin: 0 0 5px 5px">
+              {{article.likes}}
+            </small>
+            
+          </div>
+      </div>
+    {% endfor %}
+    </div>
+    <!-- 分页处理 -->
+    <div align="center" aria-label="Page navigation example" style="padding: 20px">
+      <ul class="pagination justify-content-center">
+        <!--previous-->
+        {% if articles.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ articles.previous_page_number}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link " href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% endif %}
+
+        <!--all-->
+        {% for page_num in page_range %}
+          {% if page_num == articles.number %}
+            <li class="page-item active"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+          {% else %}
+            {% if page_num == '...' %}
+              <li class="page-item disabled" ><a class="page-link " href="#" >...</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        <!--next-->
+        {% if articles.has_next %}
+        <li>
+          <a class="page-link" href="?page={{ articles.next_page_number}}"" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link " href="#" aria-label="Previous">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% endif %}
+        
+      </ul> 
+    </div>
+    <!-- 分页处理 完成 -->
+
+
+    </div>
+  </div>
+
+  <div class=" col-md-3">
+    <div class="card">
+      <h5 class="card-header" ><img class="icon" alt="作者" src="{% static 'image/bookmarks.svg' %}" style="width:23px;height:23px;margin:0 5px 0 0;">文章分类</h5>
+      <div class="" >
+        {% for articletype in articletypes %}
+        <a href="{%url 'forum:forum'%}?articletype_id={{articletype.id}}">
+          <li class="d-flex justify-content-between align-items-center list-group-item-action" style="padding: .5rem 2rem .5rem 2rem">
+            {{articletype.type_name}}
+            <span class="badge badge-light badge-pill" style="box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);">{{articletype.article_set.count}}</span>
+          </li>
+        </a>
+        {% endfor %}
+
+      </div>
+    </div>
+    <br>
+    <div class="card">
+      <h5 class="card-header" ><img class="icon" alt="作者" src="{% static 'image/read-full.svg' %}" style="width:23px;height:23px;margin:0 5px 0 0;">热门文章</h5>
+      <div class=" " >
+        {% for likesnum in likesnums %}
+        <a href="{% url 'forum:article' likesnum.content_object.pk %}"><small>
+          <li class="d-flex justify-content-between align-items-center list-group-item-action" style="padding: .5rem 2rem .5rem 2rem">
+            {{likesnum.content_object.title}}
+            <span class="badge badge-light badge-pill" style="box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);">
+            <img class="icon" alt="点赞量" src="{% static 'image/likes.svg' %}" style="width: 13px;height: 13px;margin:0">{{likesnum.likesnum}}</span>
+          </li>
+        </small></a>
+        {% endfor %}
+
+      </div>
+    </div>
+    <br>
+    <div class="card">
+      <h5 class="card-header" ><img class="icon" alt="作者" src="{% static 'image/search.svg' %}" style="width:23px;height:23px;margin:0 5px 0 0;">文章搜索</h5>
+      <div class=" " style="padding: 20px;height: 75px;" >
+      <div class="" style="position: absolute;border-radius: 3px;border:1px solid #cccccc;">
+        <form class="form-inline "  method="get" action="">{% csrf_token %}
+            <input class="suit" type="text" placeholder="标题或作者" aria-label="Search" name='search'>
+            <button type="submit" style="background: none;width: 30px;padding: 0;"><img  class="icon" src="{% static 'image/search.svg' %}"></button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+</div>
+
+{% if user.is_authenticated %}
+
+  <div id='toc0' class="" style="margin: 30px 0;padding: 1rem;background:#e9ecef;border-radius:.5rem">
+      <form id="updatecode"  method="post" action=""   enctype="multipart/form-data" role="form">{% csrf_token %}
+        <input type="text" required name="title" placeholder="文章标题" style="border-radius: 5px;margin-bottom: 10px;width: 100%;height: 35px;border: 1px solid #cccccc;padding: 0 20px;">
+        <div>
+          <textarea class="" required id="ckeditor" rows="5"  name='content' ></textarea>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary " >发表文章</button>
+      </form>            
+  </div>
+{% else %}
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <a href="{%url 'newuser:login'%}" class="alert-link">登录</a>后，可发表文章！
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+
+{% endblock %}
+
+
+{% block script%}
+<script type="text/javascript">
+
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}个人资料{% endblock %}
+{% block content %}
+<div class="row">
+    <div class=' col-md-4' >
+        <div style="text-align:center;">
+            <img src="{{ user.avatar.url }}" class="img-thumbnail" alt="..." style="width:150px;height:150px;">
+        </div>
+    </div>
+    <div class='col-md-8' style="margin: 20px 0;">
+        <h4>
+        {{user.nickname}}
+        </h4>   
+        <span>
+            简介：{{user.profile}}
+        </span><br>
+        <span>
+            邮箱：{{user.email}}
+        </span><br>
+        <span>
+            <a href="{%url 'newuser:modify_info'%}">修改个人资料</a>
+        </span>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12 jumbotron " >
+        <table class='table table-sm table-hover' >
+            <thead class="thead-dark">
+                <tr>
+                    <th>帖子</th>
+                    <th>发布时间</th>
+                    <th>浏览量</th>
+                    <th>点赞数</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in article_list %}
+                <tr>
+                    <td><a href="{%  url 'forum:article' article.id %}">{{article.title}}</a></td>
+                    <td>
+                        {% if article.created_time__year < time.year %}
+                          {{ article.created_time|date:'Y-m-d H:i' }}
+                        {% else %}
+                          {{ article.created_time|date:'m-d H:i' }}
+                        {% endif %}
+                    </td>
+                    <td>{{article.read_num}}</td>
+                    <td>{{article.likes}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+        <!-- 分页处理 -->
+    <div align="center" aria-label="Page navigation example" style="padding: 20px">
+      <ul class="pagination justify-content-center">
+        <!--previous-->
+        {% if articles.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ articles.previous_page_number}}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link " href="#" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% endif %}
+
+        <!--all-->
+        {% for page_num in page_range %}
+          {% if page_num == articles.number %}
+            <li class="page-item active"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+          {% else %}
+            {% if page_num == '...' %}
+              <li class="page-item disabled" ><a class="page-link " href="#" >...</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        <!--next-->
+        {% if articles.has_next %}
+        <li>
+          <a class="page-link" href="?page={{ articles.next_page_number}}"" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <a class="page-link " href="#" aria-label="Previous">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% endif %}
+        
+      </ul> 
+    </div>
+    <!-- 分页处理 完成 -->
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+

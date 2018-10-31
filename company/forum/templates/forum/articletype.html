@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="some-box">
+  <div class="box-body">
+    <div class="chat-head">
+      <h1>兴趣部落</h1>
+    </div>
+    <div class="chat-body">
+      <div class="messages-content" id="messages-content">
+
+      </div>
+    </div>
+    <div class="chat-footer row">
+      <div class="col-10">
+        <textarea class="message-content " id="emojione_text"></textarea>
+      </div>
+      <div class="col-2">
+        <button class="message-submit" id="">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block script%}
+<script>
+    var roomName = {{ room_name_json }};
+    var user_avater_url = '{{user.avatar.url}}';
+    if ($.trim(user_avater_url) == ''){
+      user_avater_url = 'http://' +  window.location.host+'/media/AvatarImage/moren.png';
+    };
+
+    var chatSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/chat/' + roomName + '/');
+
+    chatSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message']['msg'];
+        var username = data['message']['username'];
+        var avater_url = data['message']['avater_url'];
+        setDate();
+        if (username === '{{user.username}}'){
+          $('<div class="message"><div class="message-body message-right new">' + message + '</div></div>').appendTo($('.messages-content'));
+        }
+        else{
+          $('<div class="message message-left"><figure class="avatar"><img src='+avater_url+'/></figure><div class="username">'+username+'</div><div class="message-body new">'+message+'</div></div>').appendTo($('.messages-content'));
+        }
+          
+          updateScrollbar();
+
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+</script>
+<script type="text/javascript">
+  var d, h, m;
+
+  $(window).ready(function() {
+    updateScrollbar();
+  });
+
+  function updateScrollbar() {
+    var messages_content = document.getElementById('messages-content');
+    messages_content.scrollTop = messages_content.scrollHeight;
+  }
+
+  function setDate(){
+    d = new Date()
+    if (m != d.getMinutes()) {
+      m = d.getMinutes();
+      $('<div class="message-timestamp"><span class="timestamp">'+ d.getHours() + ':' + m +'</span></div>').appendTo($('.messages-content'));
+    }
+  }
+
+  $('.message-submit').click(function() {
+    var messageInputDom = $('.emojionearea-editor');
+    var message = messageInputDom.html();
+    if ($.trim(message) != '') {
+    chatSocket.send(JSON.stringify({
+        'message': message,
+        'user_avater_url':user_avater_url,
+    }));
+    messageInputDom.empty();
+    messageInputDom.focus();
+    }
+    var emoji_html = $('.emojionearea-editor').html();
+    console.log(emoji_html);
+  });
+
+  $(window).on('keydown', function(e) {
+    if (e.which == 13) {
+      $('.message-submit').click();
+      return false;
+    }
+  })
+
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    window.emojioneVersion = "2.2.7";
+      $("#emojione_text").emojioneArea({
+        autoHideFilters: true,
+        search : false ,
+        pickerPosition : 'top',
+        filtersPosition:'bottom',
+        tones:false,
+      });
+    });
+</script>
+
+
+<style type="text/css">
+  .emojioneemoji{
+    font-size: inherit;
+    height: 2ex;
+    width: 2.1ex;
+    min-height: 20px;
+    min-width: 20px;
+    display: inline-block;
+    margin: -.2ex .15em .2ex;
+    line-height: normal;
+    vertical-align: middle;
+    max-width: 100%;
+    top: 0;
+  }
+  .some-box{
+    max-width: 600px;
+    margin:0 auto;
+    overflow:hidden；
+  }
+  .box-body{
+    background: #eee;
+    border-radius: 10px;
+    overflow:hidden
+  }
+  .chat-head{
+    background:#274869;
+    padding: 5px 20px;
+    text-align: center;
+    /*box-shadow: 0 5px 20px rgb(0,0,0,.5);*/
+    border-bottom: 1px solid #c3c3c3;
+  }
+  .chat-head h1{
+    margin:0;
+    font-weight: bold;
+    font-size: 20px;
+    color: #fff;
+  }
+  .chat-body{
+    min-height: 400px;
+    max-height: 800px;
+    margin: 5px 0;
+    background: #fff;
+  }
+  /* 滚动条样式设置 */
+  .messages-content::-webkit-scrollbar{/*滚动条整体部分，其中的属性有width,height,background,border等*/
+      width:5px; 
+  }
+  .messages-content::-webkit-scrollbar-track-piece{/*内层轨道，滚动条中间部分*/
+      background:#e6e6e6;
+  }
+  .messages-content::-webkit-scrollbar-thumb{/*滚动条里面可以拖动的那部分*/
+    background:#bbbbbb;
+    border-radius:5px;
+  }
+  /* 滚动条样式设置 ---- 完成*/
+
+  .messages-content{
+    position: relative;
+    padding:3px 2%;
+    height: 400px;
+    overflow:auto;
+  }
+  .message{
+    clear: both;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 6px 0;
+
+  }
+  .message:last-child {
+    margin-bottom: 50px;
+  }
+  .new {
+    -webkit-transform: scale(0);
+            transform: scale(0);
+    -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+    -webkit-animation: bounce 500ms linear both;
+            animation: bounce 500ms linear both;
+  }
+  .message-body{
+    float: left;
+    padding: 5px 10px 7px;
+    border-radius: 5px 15px 15px 15px;
+    background: rgb(255,255,255,.5);
+    position: relative;
+    border: 1px solid #fff;
+    box-shadow: 0 3px 5px rgba(0,0,0,.2);
+  }
+  .message-left{
+    margin-left: 35px;
+  }
+
+  .message-right{
+    float: right;
+    border-radius: 15px 5px 15px 15px;
+    background: rgb(144,207,236,.24);
+    border: 1px solid #feffff;
+  }
+  .message .avatar {
+    position: absolute;
+    z-index: 1;
+    left: 10px;
+    border-radius: 30px;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow:0 2px 5px rgba(0,0,0,.05);
+  }
+  .message .avatar img {
+    width: 100%;
+    height: auto;
+  }
+  .username{
+    font-size: 10px;
+  }
+  .message-timestamp{
+    clear: both;
+    text-align: center;
+  }
+  .timestamp{
+    padding:0 5px 0 5px; 
+    font-size: 10px;
+    color: #555;
+    border-radius: 5px;
+    background: #ececec;
+  }
+
+  .col-10 ,.col-2{
+    padding: 0 1%;
+  }
+
+  .chat-footer{
+    margin: 0;
+  }
+  .message-content{
+    width: 100%;
+    height: 90%;
+  }
+  .message-submit{
+    width: 100%;
+    height: 90%;
+    color: #4A90E2;
+    border: none;
+    background: #fff;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 5px;
+  }
+  .message-submit:hover{
+    background:#f5f5f5;
+  }
+
+  @-webkit-keyframes bounce {
+    0% {
+      -webkit-transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    4.7% {
+      -webkit-transform: matrix3d(0.45, 0, 0, 0, 0, 0.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.45, 0, 0, 0, 0, 0.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    9.41% {
+      -webkit-transform: matrix3d(0.883, 0, 0, 0, 0, 0.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.883, 0, 0, 0, 0, 0.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    14.11% {
+      -webkit-transform: matrix3d(1.141, 0, 0, 0, 0, 1.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1.141, 0, 0, 0, 0, 1.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    18.72% {
+      -webkit-transform: matrix3d(1.212, 0, 0, 0, 0, 1.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1.212, 0, 0, 0, 0, 1.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    24.32% {
+      -webkit-transform: matrix3d(1.151, 0, 0, 0, 0, 1.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1.151, 0, 0, 0, 0, 1.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    29.93% {
+      -webkit-transform: matrix3d(1.048, 0, 0, 0, 0, 1.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1.048, 0, 0, 0, 0, 1.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    35.54% {
+      -webkit-transform: matrix3d(0.979, 0, 0, 0, 0, 0.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.979, 0, 0, 0, 0, 0.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    41.04% {
+      -webkit-transform: matrix3d(0.961, 0, 0, 0, 0, 0.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.961, 0, 0, 0, 0, 0.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    52.15% {
+      -webkit-transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.991, 0, 0, 0, 0, 0.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    63.26% {
+      -webkit-transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1.007, 0, 0, 0, 0, 1.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    85.49% {
+      -webkit-transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(0.999, 0, 0, 0, 0, 0.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+    100% {
+      -webkit-transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+              transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+  }
+ 
+</style>
+{% endblock %}

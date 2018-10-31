@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{article.title}} {% endblock %}
+{% block content %}
+<div class="" style="margin: 30px 5px 50px 5px;">
+  <div class="row" style="padding: .5rem;background:#e9ecef;border-radius:.5rem">
+      <a href="" class="col-sm-1">
+        <img class="media-object rounded-circle" src="{{ article.user.avatar.url }}" alt="..." style="width:60px;height:60px;">
+      </a>
+      <div class="col-sm-11" style="">
+        <h4 class="media-heading" style="margin:4px 0 4px 0;">{{ article.title }}</h4>
+        <small>
+        {% for each in article.article_type.all %}
+          <a href="">
+            <span class="label label-info">
+              {{ each.article_type }}
+            </span>
+          &nbsp;
+          </a>
+        {% endfor %}
+        <span>
+          <img class="icon" alt="作者" src="{% static 'image/person.svg' %}" style="margin: 0 0 5px 0px">
+          {{ article.user.nickname }}
+        </span>
+        <span>
+          <img class="icon" alt="发表时间" src="{% static 'image/clock.svg' %}" style="margin: 0 0 5px 5px">
+          {% if article.created_time < time.year %}
+          {{ article.created_time|date:'Y-m-d H:i' }}
+          {% else %}
+          {{ article.created_time|date:'m-d H:i' }}
+        
+
+          {% endif %}
+        </span>
+        <span>
+          <img class="icon" alt="阅读量" src="{% static 'image/read.svg' %}" style="margin: 0 0 5px 5px">
+          {{article.read_num}}
+        </span>
+        <a class="dianzan" object_id='{{article.id}}' model="Article">
+          <img class="icon" alt="点赞量" src="{% static 'image/likes.svg' %}" style="margin: 0 0 5px 5px">
+          <span id='likes'>{{article.likes}}</span>
+        </a>
+        </small>
+      </div>
+  </div>
+
+  <div style="padding: 20px;background: #ffffff;min-height: 400px">{{article.content|safe}}</div>
+</div>
+<style type="text/css">
+.dianzan:hover{
+background: #ffffff;
+border-radius:1rem;
+box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+{% if user.is_authenticated %}
+  <a href="#toc0" class="aaa">发表评论&raquo;</a>
+
+  {% for comment in comments %}
+  <div class="media" style="margin:20px 0 20px 0;padding: 1rem 1rem 0 1rem;background:#ffffff;border-radius:.5rem;overflow: hidden;">
+    <a href="" >
+      <img class="mr-3 rounded-circle" src="{{ comment.user.avatar.url }}" alt="{{ comment.user.username }}"  style="width:45px;height:45px;">
+    </a>
+    <div class="media-body">
+      <div style="border-bottom:1px solid #edf0f2 ;margin-bottom: 5px">
+      <span class="">{{ comment.user.nickname }}</span>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <small>
+        {% if comment.created_time__year < time.year %}
+          {{ comment.created_time|date:'Y-m-d H:i' }}
+        {% else %}
+          {{ comment.created_time|date:'m-d H:i' }}
+        {% endif %}
+        &nbsp;&nbsp;
+        <a class="dianzan" object_id='{{comment.id}}' model="Comment" >
+          <img class="icon" alt="点赞量" src="{% static 'image/likes.svg' %}" style="margin: 0 0 5px 5px">
+          <span id='likes'>{{comment.likes}}</span>
+        </a>
+
+      </small>
+      </div>
+      <span>{{ comment.content|safe }}</span>
+    </div>
+  </div>
+  {% endfor %}
+
+
+  <br>
+  <br>
+
+  <div id='toc0' class="" style="padding: 1rem;background:#e9ecef;border-radius:.5rem">
+      <form id="updatecode"  method="post" action=""   enctype="multipart/form-data" role="form">{% csrf_token %}
+        <div>
+          <textarea class="" id="ckeditor" rows="5"  name='content' ></textarea>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary " >评论</button>
+      </form>            
+  </div>
+{% else %}
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <a href="{%url 'newuser:login'%}" class="alert-link">登录</a>后，可查看评论、发表评论！
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script >
+
+$(".dianzan").click(function(){
+  var object_id = $(this).attr("object_id");
+  var model = $(this).attr("model");
+  var date_ = {'app_label':'forum','model':model,'object_id':object_id};
+  console.log(date_);
+  likes_ = $(this).find("span#likes");
+  $.post("{%url 'forum:likes'%}",date_,function(response_date){
+    if (response_date.likes_ok){
+      var netvalue = likes_.text()*1+1;
+      likes_.text(netvalue);
+      likes_.css('color','#059be2');
+    }
+  }); 
+  
+});
+
+
+</script>
+
+{% endblock %}

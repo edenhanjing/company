@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}36个问题{% endblock %}
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+		<img src="{% static 'problems_36.jpeg'%}" class="game_img">
+		<small >
+		&thinsp; &thinsp; &thinsp; &thinsp; 心理学家阿瑟·亚伦(Arthur Aron)等人的研究成果：两个陌生人之间的亲密关系或许可以通过彼此询问一些特别的个人化问题而快速升温。这个理论的核心是，共同的脆弱能促进亲近感。这项研究的作者们称：“同伴之间发展亲密关系的关键模式在于持续、逐步升级、相互且个人化的袒露自我。”允许自己和另一个人共享脆弱可能非常困难，下面这个练习能迫使你做到这一点。</small>
+</div>
+
+<div class="game">
+		<h2>曼迪·莱恩·卡特隆的36个问题</h2>
+		<p>规则：
+			<br>1.轻松不被打扰的环境。
+			<br>2.随机抽取问题，双方先后回答。
+			<br>3.依次完成三组问题，每组12个，每组抽取多于6个问题。
+			<br>4.按要求时间完成第四步。</p>
+		<hr>
+
+		<div class="game_group" id="group_1">
+			<p>第一组（已抽<span id="group_1_num">0</span>个）&thinsp; &thinsp;<span class="button_" id="group_1_buttom">抽取问题</span></p>
+			<hr>
+			<div id="group_1_result"  class="result"></div>
+		</div>
+
+		<div class="game_group" id="group_2">
+			<p>第二组（已抽<span id="group_2_num">0</span>个）&thinsp; &thinsp;<span class="button_" id="group_2_buttom">抽取问题</span></p>
+			<hr>
+			<div id="group_2_result"  class="result"></div>
+		</div>
+
+		<div class="game_group" id="group_3">
+			<p>第三组（已抽<span id="group_3_num">0</span>个）&thinsp; &thinsp;<span class="button_" id="group_3_buttom">抽取问题</span></p>
+			<hr>
+			<div id="group_3_result"  class="result"></div>
+		</div>
+
+		<div class="game_group" id="group_4">
+			<p>第四步&thinsp; &thinsp;<span class="button_" id="group_4_buttom">已完成前三组问题，开始第四步！</span></p>
+			<hr>
+			<div id="group_4_result"  class="result"></div>
+		</div>
+</div>
+
+
+<style type="text/css">
+.button_{
+  margin: 0 10px;
+  border: none;
+  border-radius: 5px;
+  background: #e81e2b;
+  color: #fff;
+  padding:10px;
+  cursor:pointer
+} 
+.button_:hover{
+  background: #a01c1f;
+}
+.result{min-height: 80px; padding: 30px 0;font-weight: 600;}
+.game_img{
+	width: 100%;border-radius: 5px;box-shadow: 5px 5px #e2e2e2;margin: 10px 0;
+}
+.game{    
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 5px 5px 20px #e2e2e2;
+}
+.game_group{
+  padding: 20px;
+  margin-bottom:80px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 5px 5px;
+  border: 1px solid;
+
+}
+
+</style>
+{% endblock %}
+
+
+{% block script%}
+<script type="text/javascript">
+	Array.prototype.remove = function(val) {
+		var index = this.indexOf(val);
+		if (index > -1) {
+		this.splice(index, 1);
+		}
+	};
+	function rangenum(array){
+    var value = array[Math.round(Math.random()*(array.length-1))];  //随机抽取一个值
+    return(value);
+	};
+	var group1 = [
+		'1. 如果可以在世界上所有人中任意选择，你想邀请谁共进晚餐？',
+		'2. 你想成名吗？想以什么方式成名？',
+		'3. 打电话之前你会先排练一下要说什么吗，为什么？',
+		'4. 对你来说，“完美”的一天是什么样的？',
+		'5. 你上次自己唱起歌来是在什么时候，给别人唱呢？',
+		'6. 如果你能活到90岁，同时可以一直保持30岁时的心智或身体，你会选择保持哪一种呢，心智还是身体？',
+		'7. 你是否曾经秘密地预感到自己会以怎样的方式死去？',
+		'8. 说出三件你和对方看上去相同的特征。',
+		'9. 人生中的什么东西最令你感激？',
+		'10. 如果你能改变被抚养成人过程中的一件事，会是哪一件?',
+		'11. 花四分钟时间，尽可能详细告诉对方你的人生经历。',
+		'12. 如果你明天一觉醒来就能拥有某种才能或能力，你希望那会是什么能力呢？',
+		];
+	var group2 = [
+		'13. 如果有一个水晶球可以告诉你关于自己、人生，未来乃至任何事情的真相，你会想知道吗？',
+		'14. 有没有什么事是你一直梦想去做而没有去做的，为什么没有做？',
+		'15. 你人生中最大的成就是什么？',
+		'16. 在一段友谊之中你最珍视的是什么？',
+		'17. 你最宝贵的记忆是什么？',
+		'18. 你最糟糕的记忆是什么？',
+		'19. 假如你知道自己在一年内就会突然死去，你会改变现在的生活方式吗？为什么？',
+		'20. 友谊对于你来说意味着什么？',
+		'21. 爱与情感在你生活中扮演着什么样的角色？',
+		'22. 和你的同伴轮流说出心目中对方的一个好品质，每人说五条。',
+		'23. 你的家人之间关系是否亲密而温暖，你觉得自己的童年比其他人更快乐吗？',
+		'24. 你和母亲之间的关系是怎样的？',
+	];
+	var group3 = [
+		'25. 每人用“我们”造三个句子，并含有实际情况，比如“我们俩在屋子里，感觉……”',
+		'26. 补完这个句子：“我希望和某人在一起，分享……”',
+		'27. 如果你想和对方成为亲近的朋友，请告诉对方有什么重要的事情是他或她需要知道的。',
+		'28. 告诉对方你喜欢他或她身上的什么东西，要非常诚实，说些你不会对萍水之交说的东西。',
+		'29. 和对方分享生命中那些尴尬的时刻。',
+		'30. 你上次在别人面前哭是什么时候？自己哭呢？',
+		'31. 告诉对方，你已经喜欢上了他或她身上的什么品质。',
+		'32. 你觉得什么东西是严肃到不能开玩笑的，假如有的话。',
+		'33. 如果你今晚就将死去，而且没有机会同任何人联络，你会因为之前没有对别人说什么话而感到遗憾，你为什么到现在都没有对他们说这些话呢？',
+		'34. 假设你拥有的全部东西都在你的房子里，现在房子着了火，救出家人和宠物之后，你还有机会安全地冲进去最后一次，取出最后一件东西，你会拿什么，为什么？',
+		'35. 你的家人中，谁去世了会令你最难过，为什么？',
+		'36. 说出一件你的个人问题，问对方如果遇到此事要如何解决。另外，也要让对方如实告诉你，在他或她眼中，你对于这个问题的感受是怎样的。',
+	];
+	$('#group_1_buttom').click(function() {
+		result = rangenum(group1);
+		$('#group_1_result').empty();
+		$('#group_1_result').append(result);
+		group1.remove(result);
+		$('#group_1_num').text($('#group_1_num').text()*1+1);
+	});
+
+	$('#group_2_buttom').click(function() {
+		result = rangenum(group2);
+		$('#group_2_result').empty();
+		$('#group_2_result').append(result);
+		group2.remove(result);
+		$('#group_2_num').text($('#group_2_num').text()*1+1);
+	});
+
+	$('#group_3_buttom').click(function() {
+		result = rangenum(group3);
+		$('#group_3_result').empty();
+		$('#group_3_result').append(result);
+		group3.remove(result);
+		$('#group_3_num').text($('#group_3_num').text()*1+1);
+	});
+
+	$('#group_4_buttom').click(function() {
+		$('#group_4_result').empty();
+		$('#group_4_result').append('彼此对视四分钟!');
+	});
+
+</script>
+{% endblock %}
+

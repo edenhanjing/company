@@ -1,0 +1,14 @@
+.container{
+	max-width: 1080px;
+}
+
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+span .i-search{
+	height: 16px;
+	width: 16px ;
+	background: url('/static/image/search.svg' ) no-repeat ;
+}
+

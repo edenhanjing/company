@@ -1,0 +1,219 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="{% static 'image/logo.png' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <style type="text/css">
+      .icon{
+        height: 16px;
+        width: 16px ;
+        margin: 5px;
+      }
+
+      div.search_form{
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+        outline: 0;
+        border: 1px solid #021c24;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 3px;
+        margin: 0 5px 0 0;
+        display: block;
+        text-align: center;
+        font-size: 18px;
+        color: #000000;
+        transition-duration: 0.25s;
+        font-weight: 300;
+      }
+
+      form input.suit,form button {
+        -webkit-appearance: none;
+           -moz-appearance: none;
+                appearance: none;
+        outline: 0;
+        border: 1px solid white;
+        background-color: rgba(255, 255, 255, );
+        width: 100px;
+        border-radius: 3px;
+        padding: 2px 5px;
+        display: block;
+        text-align: center;
+        font-size: 18px;
+        color: #000000;
+        transition-duration: 0.25s;
+        font-weight: 300;
+      }
+
+      form input.suit:focus {
+        background-color: white;
+        width: 180px;
+        color: #000000;
+      }
+    </style>
+
+    <style type="text/css">
+      a{color:#165f92;text-decoration:none;}
+      body{background:#9ca6af ;}
+      footer {
+        width: 100%;
+        border-radius: 7px 7px 0px 0px;
+        position: relative;
+        margin: 10px 0 0 0;
+      }
+      .wrapper {
+        transform-origin: center bottom 20px;
+        transition: all 0.5s ease 0s;
+        box-shadow: 0px 22px 54px rgba(0, 0, 0, 0.5);
+        background: #f7f7f9;
+        padding: 0px 0px 100px 0px;
+      }
+      body.tight .wrapper {
+        transform: translateY(-2.8rem) scale(0.95);
+        cursor: pointer;
+
+      }
+    </style>
+  </head>
+  <body>
+  <!-- daohanglan -->
+  <div class="wrapper" style="min-height: 1000px">
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark fixed-top bg-dark" style="padding:2px 16px 2px 16px;margin-bottom: 5px;text-align: center;">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">
+          FDD
+          <img src="{% static 'image/logo.png' %}" style="width:30px;height:30px;margin:0px 10px 0px 10px;display: none">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+              <a class="nav-link" href="{% url 'introduce:index' %}">主页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'forum:forum' %}">论坛 </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="{% url 'chat:chat_room' 'chat' %}">聊天室</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                其它
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'others:problems_36' %}">曼迪·莱恩·卡特隆的36个问题</a>
+                <a class="dropdown-item" href="{% url 'others:tiangou' %}">享受舔狗模式</a>
+              </div>
+            </li>
+          </ul>
+
+
+          <div class="search_form" style="display: none;">
+          <form class="form-inline" method="get">{% csrf_token %}
+            <input class="suit" type="text" placeholder="Search" aria-label="Search" name='search'>
+            <img  class="icon" src="{% static 'image/search.svg' %}">
+          </form>
+          </div>
+
+          
+          {% if request.user.is_authenticated%}
+            <a href="{% url 'newuser:userview'%}">
+              <img id="base_avatar" src="{{ request.user.avatar.url }}" class="img-circle img-responsive rounded-circle"  style="width:30px;height:30px;margin: 0 5px 0 10px">
+            </a>
+            <div class="pull-right" >
+            <ul class="navbar-nav mr-auto ">
+              <li class="nav-item active">
+                 <a class="nav-link " href="{% url 'newuser:userview'%}" >{{user.nickname}}<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item ">
+                 <a class="nav-link " href="{% url 'newuser:logout' %}">注销<span class="sr-only">(current)</span></a>
+              </li>
+            </ul>
+            </div>
+          {% else %}
+            <div class="pull-right" >
+            <ul class="navbar-nav mr-auto ">
+              <li class="nav-item active">
+                 <a class="nav-link " href="{% url 'newuser:login' %}" >登录<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item active">
+                 <a class="nav-link " href="{% url 'newuser:register' %}">注册<span class="sr-only">(current)</span></a>
+              </li>
+            </ul>
+            </div>
+          {% endif %}
+          
+              
+        </div>
+      </div>
+    </nav>
+    
+    
+    
+    <div class="container" style="margin-bottom: 100px" >
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+    <footer class="footer " style="text-align: center;margin-bottom: 1rem">
+      <div class="container">
+          <small >&copy; 2018-2018 | FDD</small><br>
+          <small >Contact us by email:han-xiansheng@qq.com</small>
+      </div>
+    </footer>
+    </main>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <link href="{% static 'js/emojionearea.min.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type='text/javascript'>
+      CKEDITOR.replace("ckeditor",{ toolbar : [ ['Styles','Format','Font','FontSize'], ['TextColor','BGColor',],
+            ['Bold','Italic','Underline','Strike'], 
+            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Subscript','Superscript','Smiley'], ] });
+    </script>                
+    
+    
+    
+
+    {% block script%}{% endblock %}
+    
+  </body>
+</html>
+
+<script type="text/javascript">
+  $(document).ready(function($) {
+  $(window).on("scroll", function() {
+    if (
+      $(window).scrollTop() + $(window).height() >
+      $(".wrapper").outerHeight()
+    ) {
+      $("body").addClass("tight");
+      $(".arrow").hide();
+    } else {
+      $("body").removeClass("tight");
+      $(".arrow").show();
+    }
+  });
+
+  
+});
+
+
+</script>
+
+
+</body>

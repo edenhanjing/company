@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}修改个人信息{% endblock %}
+
+{% block content%}
+  <style>
+    .label {
+      cursor: pointer;
+    }
+
+    .progress {
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    .alert {
+      display: none;
+    }
+
+    .img-container img {
+      max-width: 100%;
+    }
+    .content-body{margin-top: 20px; }
+  </style>
+
+
+  <div class="container">
+  <div class="content-body">
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+    </div>
+    <div class="alert" role="alert"></div>
+
+    <div class="media">
+      <label class="label mr-4 " data-toggle="tooltip" title="修改你的头像" style="background: #f5f5f5;border-radius: 5px;margin: 0 20px;box-shadow: 5px 5px 20px rgb(224, 224, 224);height: 160px;width: 160px;">
+        <img class="rounded" id="avatar" src="{{user.avatar.url}}"  alt='未加载出头像' style="width: 160px;height: 160px;">
+        <input type="file" class="sr-only" id="input" name="image" accept="image/*">
+      </label>
+      
+      <div class="media-body" style="background: #f5f5f5;padding: 5px;border-radius: 5px;">
+        <div>
+          <form class="form-horizontal" action=""  enctype="multipart/form-data" method="post" >{% csrf_token %}  
+            <div class="form-group">
+                <label  class="col-sm-4 control-label">昵称</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" placeholder="{{user.nickname}}" name="nickname" value="{{user.nickname}}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label  class="col-sm-4 control-label">个人简介</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" placeholder="{{user.profile}}" name="profile" value="{{user.profile}}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-4 control-label">email</label>
+                <div class="col-sm-6">
+                    <input type="email" class="form-control" placeholder="{{user.email}}" name="email" value="{{user.email}}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-4 control-label"></label>
+                <div class="col-sm-6">
+                    <button type="submit" class="btn btn-success"  >&nbsp;&nbsp;更新&nbsp;&nbsp;</button>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel">修改头像</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="img-container">
+              <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id="crop">应用</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  </div>
+{% endblock %}
+
+{% block script%}
+  <link rel="stylesheet" href="{% static 'cropper.css' %}">
+  <script src="{% static 'cropper.js' %}"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var avatar = document.getElementById('avatar');
+      var base_avatar = document.getElementById('base_avatar');
+      var image = document.getElementById('image');
+      var input = document.getElementById('input');
+      var $progress = $('.progress');
+      var $progressBar = $('.progress-bar');
+      var $alert = $('.alert');
+      var $modal = $('#modal');
+      var cropper;
+
+      $('[data-toggle="tooltip"]').tooltip();
+
+      input.addEventListener('change', function (e) {
+        var files = e.target.files;
+        var done = function (url) {
+          input.value = '';
+          image.src = url;
+          $alert.hide();
+          $modal.modal('show');
+        };
+        var reader;
+        var file;
+        var url;
+
+        if (files && files.length > 0) {
+          file = files[0];
+
+          if (URL) {
+            done(URL.createObjectURL(file));
+          } else if (FileReader) {
+            reader = new FileReader();
+            reader.onload = function (e) {
+              done(reader.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      });
+
+      $modal.on('shown.bs.modal', function () {
+        cropper = new Cropper(image, {
+          aspectRatio: 1,
+          viewMode: 3,
+        });
+      }).on('hidden.bs.modal', function () {
+        cropper.destroy();
+        cropper = null;
+      });
+
+      document.getElementById('crop').addEventListener('click', function () {
+        var initialAvatarURL;
+        var canvas;
+
+        $modal.modal('hide');
+
+        if (cropper) {
+          canvas = cropper.getCroppedCanvas({
+            width: 160,
+            height: 160,
+          });
+          initialAvatarURL = avatar.src;
+          avatar.src = canvas.toDataURL();
+          base_avatar.src = avatar.src;
+          $progress.show();
+          $alert.removeClass('alert-success alert-warning');
+
+          canvas.toBlob(function(blob) {
+            var formData = new FormData();
+            console.log(blob);
+            var file_name = '{{user.username}}'+".jpg";
+            var file = new File([blob], file_name, {
+              type: "image/jpeg",
+            });
+
+            formData.append('avatar', file);
+            console.log(formData);
+            $.ajax('', {
+              method: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+
+              xhr: function () {
+                var xhr = new XMLHttpRequest();
+
+                xhr.upload.onprogress = function (e) {
+                  var percent = '0';
+                  var percentage = '0%';
+
+                  if (e.lengthComputable) {
+                    percent = Math.round((e.loaded / e.total) * 100);
+                    percentage = percent + '%';
+                    $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                  }
+                };
+
+                return xhr;
+              },
+
+              success: function () {
+                $alert.show().addClass('alert-success').text('头像更新成功');
+              },
+
+              error: function () {
+                avatar.src = initialAvatarURL;
+                $alert.show().addClass('alert-warning').text('头像更新失败');
+              },
+
+              complete: function () {
+                $progress.hide();
+              },
+            });
+          }, "image/jpeg");
+        }
+      });
+    });
+  </script>
+{% endblock %}
+
