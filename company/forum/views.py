@@ -20,7 +20,7 @@ def forum(request):
     articles = Article.objects.all()
 
     if request.method=='POST':
-        print('post')
+        #print('post')
         title = request.POST.get('title','')
         content = request.POST.get('content','')
         if title and content != '':
@@ -29,7 +29,7 @@ def forum(request):
     if request.GET:
         search = request.GET.get('search','')
         if search:
-            articles = Article.objects.filter(Q(title__contains=search) | Q(user__username__contains=search))
+            articles = Article.objects.filter(Q(title__icontains=search) | Q(user__username__icontains=search))
         articletype_id =request.GET.get('articletype_id',"")
         if articletype_id:
             articles = Article.objects.filter(article_type__id=articletype_id)
