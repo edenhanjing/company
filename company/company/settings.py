@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'company',
         'USER': 'root',
-        'PASSWORD': 'hanjingdemysql',
+        'PASSWORD': 'xxxxxxxx',
         'PORT': '3306',
         'HOST':'127.0.0.1',
         'charset':'utf8',
@@ -195,5 +195,5 @@ EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.qq.com'  # 如果是 163 改成 smtp.163.com
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'han-xiansheng@qq.com' # 帐号
-EMAIL_HOST_PASSWORD = 'qnarpzkbiqjgbihd'  # 密码
+EMAIL_HOST_PASSWORD = 'xxx'  # 授权码，非邮箱登录密码，配置请百度。
 DEFAULT_FROM_EMAIL = 'FDD<han-xiansheng@qq.com>'
