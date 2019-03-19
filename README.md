@@ -8,7 +8,7 @@ Django的基础，流行功能展示。这是一个囊括众多django功能的�
 2.新建一个env，安装项目所需库 pip install -r requirements.txt。<br> 
 3.mysql新建一个指定utf8的数据库company，CREATE DATABASE company CHARACTER SET utf8。<br> 
 5.修改company/settings.py中的邮箱配置、数据库配置。 <br> 
-6.django创建数据表，python manage.py makemigrations。 <br> 
+6.django创建数据表，python manage.py makemigrations ，python manage.py migrate。 <br> 
 7.试验启动项目，python manage.py runserver。 
 
 # 展示
