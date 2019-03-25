@@ -1,7 +1,4 @@
 #----------------------------------------------------------------------------
-# Purpose:
-# Copyright Huawei Technologies Co., Ltd. 2010-2018. All rights reserved.
-# Author: 
 #----------------------------------------------------------------------------
 import os
 from SCons.Script import *
