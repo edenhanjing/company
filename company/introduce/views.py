@@ -15,7 +15,7 @@ import os
 def index(request):
 	context = {}
 	#print(request)
-	context['companyinfo'] = CompanyInfo.objects.get(id=1)
+	context['companyinfo'] = CompanyInfo.objects.filter(id=1).first()
 	context['department'] = Department.objects.filter(company_id=1)
 
 	
