@@ -102,7 +102,7 @@ DATABASES = {
 #         'charset':'utf8',
 #     }
 # }
-
+# CREATE DATABASE ciweb CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
