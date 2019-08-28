@@ -151,21 +151,17 @@ AUTH_USER_MODEL = 'newuser.NewUser'
 
 #ckeditor
 CKEDITOR_UPLOAD_PATH = "ckeditor"
+CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_CONFIGS = {
     'default': {
         'width':1200,
         'toolbar': (
-            ['Undo','Redo'],
-            ['Save','Preview','Maximize','ShowBlocks',], 
+            ['Preview','Maximize','ShowBlocks',], 
             ['Styles','Format','Font','FontSize'], 
-            ['Cut','Copy','Paste',], 
+            ['TextColor','BGColor','Bold','Italic','Underline','Strike'], 
             ['SelectAll','RemoveFormat'], 
-            ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
-            ['Link','Unlink','Anchor'], 
-            ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'], 
-            ['TextColor','BGColor',],
-            ['Bold','Italic','Underline','Strike'], 
-            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Subscript','Superscript'], 
+            ['NumberedList','BulletedList','Subscript','Superscript','-','Outdent','Indent','Blockquote'], 
+            ['Table','Image','Link','Unlink','Anchor','Smiley'], 
         ),
     },
     'awesome_ckeditor': {
