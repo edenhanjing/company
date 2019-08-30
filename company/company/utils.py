@@ -29,3 +29,43 @@ def activation_html_content(user):
 def channel_send_msg(room_name,msg):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(room_name, {"type": "user.message",'message': {'msg':msg}})
+    
+    
+
+# 装饰器
+from django.contrib.auth.decorators import user_passes_test
+from django.conf import settings
+def group_required(*group_names):
+   """Requires user membership in at least one of the groups passed in."""
+   def in_groups(u):
+       if u.is_authenticated:
+           if bool(u.groups.filter(name__in=group_names)) | u.is_superuser:
+               return True
+       return False
+   return user_passes_test(in_groups)
+
+def anonymous_required(function=None, redirect_url=None):
+   if not redirect_url:
+       redirect_url = settings.LOGIN_REDIRECT_URL
+   actual_decorator = user_passes_test(
+       lambda u: u.is_anonymous,
+       login_url=redirect_url
+   )
+   if function:
+       return actual_decorator(function)
+   return actual_decorator
+
+import functools
+# 访问量
+def views_count(func):
+    @functools.wraps(func)
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('views_count'):
+            views = Views.objects.get_or_create(day=timezone.make_aware(timezone.datetime.today()))[0]
+            views.view_num += 1
+            views.save()
+            request.session['views_count'] = True
+            # request.session.set_expiry(200)
+
+        return func(request, *args, **kwargs)
+    return wrapper
