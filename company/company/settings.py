@@ -200,3 +200,75 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'han-xiansheng@qq.com' # 帐号
 EMAIL_HOST_PASSWORD = 'xxx'  # 授权码，非邮箱登录密码，配置请百度。
 DEFAULT_FROM_EMAIL = 'FDD<han-xiansheng@qq.com>'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '[%(asctime)s][%(threadName)s:%(thread)d][task_id:%(name)s][%(filename)s:%(lineno)d]'
+                      '[%(levelname)s][%(message)s]'
+        },
+        'simple': {
+            'format': '[%(levelname)s][%(asctime)s][%(filename)s:%(lineno)d]%(message)s'
+        },
+        'collect': {
+            'format': '%(message)s'
+        }
+    },
+    'filters': {
+    },
+    'handlers': {
+        #打印到终端的日志
+        'console': {
+           'level': 'DEBUG',
+           #'filters': ['require_debug_true'],
+           'class': 'logging.StreamHandler',
+           'formatter': 'simple'
+        },
+        #打印到文件的日志,收集info及以上的日志
+        'default': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',  # 保存到文件，自动切
+            'filename': os.path.join(BASE_LOG_DIR, "info.log"),  # 日志文件
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
+        #打印到文件的日志:收集错误及以上的日志
+        'error': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.TimedRotatingFileHandler',  # 保存到文件，自动切
+            'filename': os.path.join(BASE_LOG_DIR, "warning.log"),  # 日志文件
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 5,
+            'formatter': 'standard',
+        },
+        #打印到文件的日志
+        'collect': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件，自动切
+            'filename': os.path.join(BASE_LOG_DIR, "collect.log"),
+            'maxBytes': 1024 * 1024 * 5,  # 日志大小 5M
+            'backupCount': 5,
+            'formatter': 'collect',
+            'encoding': "utf-8"
+        }
+    },
+    'loggers': {
+        #logging.getLogger()拿到的logger配置
+        'django': {
+            'handlers': ['default','error'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        #logging.getLogger('collect')拿到的logger配置
+        'collect': {
+            'handlers': ['collect',],
+            'level': 'INFO',
+        }
+    },
+}
