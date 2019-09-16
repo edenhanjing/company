@@ -186,9 +186,6 @@ CHANNEL_LAYERS = {
     },
 }
 
-#支付宝sdk
-ALIPAY_APPID = "2088102176217764"
-ALIPAY_URL = "https://openapi.alipaydev.com/gateway.do"
 
 #messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
