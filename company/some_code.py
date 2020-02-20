@@ -41,12 +41,6 @@ def execute_script(env,scriptfile):
     libnode = env.SConscript(scriptfile, variant_dir='build/output/'+basename, duplicate=0 ,exports=['basepath','env'])
     return libnode
 
-def setup():
-    EnsurePythonVersion(3, 6)
-    EnsureSConsVersion(3, 0)
-    AddMethod(Environment, compile_all_c,'compile_all_c')
-    AddMethod(Environment, execute_script,'execute_script')
-
 import os,subprocess,logging
 
 
