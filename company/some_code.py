@@ -50,7 +50,7 @@ def setup():
 
 import os,subprocess,logging
 
-#替代shell执行 source /opt/buildtools/RTOS-V200R007/opt/RTOS/dlsetenv.sh -p arm32A15be_4.1_ek -v V200R007C00
+
 class Shell(object):
     
     @classmethod
