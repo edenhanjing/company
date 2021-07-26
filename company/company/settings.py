@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '312g0!2j4k8s&1i15+jk80hq*ktw3)mly4&j%i(uft&52_(x5q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*",]
 
@@ -195,7 +195,7 @@ EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.qq.com'  # 如果是 163 改成 smtp.163.com
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'han-xiansheng@qq.com' # 帐号
-EMAIL_HOST_PASSWORD = 'xxx'  # 授权码，非邮箱登录密码，配置请百度。
+EMAIL_HOST_PASSWORD = 'kgeztatqbbmxbiag'  # 授权码，非邮箱登录密码，配置请百度。
 DEFAULT_FROM_EMAIL = 'FDD<han-xiansheng@qq.com>'
 
 
